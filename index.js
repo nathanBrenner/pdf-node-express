@@ -1,7 +1,6 @@
 const express = require('express')
 const PDFGenerator = require('pdfkit')
 const fs = require('fs')
-const path = require('path')
 const app = express()
 const port = 3000
 
@@ -17,17 +16,15 @@ app.listen(port, () => {
 
 async function pdf(req, res) {
 	try {
-		const filename = 'foo';
-		const pdfPath = `${filename}.pdf`
+		const filename = `pdf-generator-${Math.round(Math.random() * 10000)}`;
 		const doc = new PDFGenerator()
 		
 		res.setHeader('Content-Disposition', `attachment; filename="${filename}"`)
 		res.setHeader('Access-Control-Allow-Origin', '*')
 		res.setHeader('Content-Type', 'application/pdf')
 		res.status(201)
-		// doc.pipe(fs.createWriteStream(pdfPath))
 		doc.text('hello world')
-		await doc.pipe(res)
+		doc.pipe(res)
 		doc.end()
 	} catch (err) {
 		res.status(500).json({message: 'error happened, sorry'})
